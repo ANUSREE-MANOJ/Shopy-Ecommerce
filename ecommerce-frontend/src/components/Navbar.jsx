@@ -1,13 +1,25 @@
-import { Link } from "react-router-dom";
-import { FaShoppingCart} from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { FaShoppingCart, FaHeart } from "react-icons/fa";
 import { FaUser } from "react-icons/fa6";
 import { useSelector } from "react-redux";
-import { FaHeart } from "react-icons/fa6";
+
 function Navbar() {
+  const navigate = useNavigate();
 
   const cartItems = useSelector(
     (state) => state.cart.cartItems
   );
+
+  const user = JSON.parse(
+    localStorage.getItem("user")
+  );
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    navigate("/login");
+  };
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
@@ -27,22 +39,36 @@ function Navbar() {
 
         <div className="hidden md:flex items-center gap-8">
 
+          <Link
+            to="/products"
+            className="hover:text-indigo-600"
+          >
+            Products
+          </Link>
 
-  <Link to="/products">Products</Link>
+          {user?.role === "admin" && (
+            <Link
+              to="/admin"
+              className="font-semibold text-red-600 hover:text-red-800"
+            >
+              Admin
+            </Link>
+          )}
 
-  
+        </div>
 
-</div>
-        {/* Icons */}
+        {/* Right Side */}
 
         <div className="flex items-center gap-6 text-xl">
-          <Link
-    to="/wishlist"
-    className="text-red-500 hover:text-pink-500"
-  >
-    <FaHeart size={22} />
-  </Link>
 
+          {/* Wishlist */}
+
+          <Link
+            to="/wishlist"
+            className="text-red-500 hover:text-pink-500"
+          >
+            <FaHeart size={22} />
+          </Link>
 
           {/* Cart */}
 
@@ -50,7 +76,6 @@ function Navbar() {
             to="/cart"
             className="relative"
           >
-
             <FaShoppingCart size={22} />
 
             {cartItems.length > 0 && (
@@ -58,17 +83,36 @@ function Navbar() {
                 {cartItems.length}
               </span>
             )}
-
           </Link>
 
-          {/* Login */}
+          {/* User Section */}
 
-          <Link
-            to="/login"
-            className="hover:text-indigo-600"
-          >
-            <FaUser size={22} />
-          </Link>
+          {user ? (
+            <div className="flex items-center gap-3">
+
+              <Link
+                to="/profile"
+                className="font-medium text-sm hover:text-indigo-600"
+              >
+                Hi, {user.name}
+              </Link>
+
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+              >
+                Logout
+              </button>
+
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              className="hover:text-indigo-600"
+            >
+              <FaUser size={22} />
+            </Link>
+          )}
 
         </div>
 
