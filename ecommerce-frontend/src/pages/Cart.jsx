@@ -30,15 +30,22 @@ function Cart() {
         <>
           {cartItems.map((item) => (
             <div
-              key={item.id}
+              key={item._id}
               className="flex items-center gap-6 border-b py-4"
             >
 
               <img
-                src={item.image}
-                alt={item.name}
-                className="w-24 h-24 object-cover"
-              />
+  src={
+    item.image.startsWith("http")
+      ? item.image
+      : `${import.meta.env.VITE_API_URL}${item.image}`
+  }
+  alt={item.name}
+  className="w-24 h-24 object-cover"
+  onError={(e) => {
+    e.target.src = "https://picsum.photos/200";
+  }}
+/>
 
               <div className="flex-1">
 
@@ -53,7 +60,7 @@ function Cart() {
                <div className="flex items-center gap-3 mt-2">
 
   <button
-    onClick={() => dispatch(decreaseQty(item.id))}
+    onClick={() => dispatch(decreaseQty(item._id))}
     className="bg-gray-200 px-3 py-1 rounded"
   >
     -
@@ -64,7 +71,7 @@ function Cart() {
   </span>
 
   <button
-    onClick={() => dispatch(increaseQty(item.id))}
+    onClick={() => dispatch(increaseQty(item._id))}
     className="bg-gray-200 px-3 py-1 rounded"
   >
     +
@@ -80,7 +87,7 @@ function Cart() {
 
               <button
                 onClick={() =>
-                  dispatch(removeFromCart(item.id))
+                  dispatch(removeFromCart(item._id))
                 }
                 className="bg-red-500 text-white px-4 py-2 rounded"
               >

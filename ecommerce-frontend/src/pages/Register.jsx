@@ -1,9 +1,50 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import axios from "axios";
 
 function Register() {
-  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+
+  const [showPassword, setShowPassword] =
+    useState(false);
+
+  const [formData, setFormData] =
+    useState({
+      name: "",
+      email: "",
+      password: "",
+    });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]:
+        e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/auth/register`,
+        formData
+      );
+
+      alert("Registration Successful");
+
+      navigate("/login");
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert("Registration Failed");
+
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -14,32 +55,53 @@ function Register() {
           Register
         </h2>
 
-        <form className="space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4"
+        >
 
           <input
             type="text"
+            name="name"
             placeholder="Full Name"
+            value={formData.name}
+            onChange={handleChange}
             className="w-full border p-3 rounded-lg"
+            required
           />
 
           <input
             type="email"
+            name="email"
             placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
             className="w-full border p-3 rounded-lg"
+            required
           />
 
           <div className="relative">
 
             <input
-              type={showPassword ? "text" : "password"}
+              type={
+                showPassword
+                  ? "text"
+                  : "password"
+              }
+              name="password"
               placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
               className="w-full border p-3 rounded-lg"
+              required
             />
 
             <button
               type="button"
               onClick={() =>
-                setShowPassword(!showPassword)
+                setShowPassword(
+                  !showPassword
+                )
               }
               className="absolute right-3 top-4"
             >

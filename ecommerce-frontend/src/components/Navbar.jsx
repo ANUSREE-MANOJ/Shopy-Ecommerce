@@ -2,9 +2,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaShoppingCart, FaHeart } from "react-icons/fa";
 import { FaUser } from "react-icons/fa6";
 import { useSelector } from "react-redux";
+import { useState } from "react";
 
 function Navbar() {
   const navigate = useNavigate();
+
+  const [showAdminMenu, setShowAdminMenu] =
+    useState(false);
 
   const cartItems = useSelector(
     (state) => state.cart.cartItems
@@ -46,15 +50,6 @@ function Navbar() {
             Products
           </Link>
 
-          {user?.role === "admin" && (
-            <Link
-              to="/admin"
-              className="font-semibold text-red-600 hover:text-red-800"
-            >
-              Admin
-            </Link>
-          )}
-
         </div>
 
         {/* Right Side */}
@@ -88,23 +83,90 @@ function Navbar() {
           {/* User Section */}
 
           {user ? (
-            <div className="flex items-center gap-3">
+            user.role === "admin" ? (
+              <div className="relative">
 
-              <Link
-                to="/profile"
-                className="font-medium text-sm hover:text-indigo-600"
-              >
-                Hi, {user.name}
-              </Link>
+                <button
+                  onClick={() =>
+                    setShowAdminMenu(
+                      !showAdminMenu
+                    )
+                  }
+                  className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm"
+                >
+                  Admin ▼
+                </button>
 
-              <button
-                onClick={handleLogout}
-                className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
-              >
-                Logout
-              </button>
+                {showAdminMenu && (
+                  <div className="absolute right-0 mt-2 w-56 bg-white border rounded-lg shadow-lg z-50">
 
-            </div>
+                    <Link
+                      to="/admin"
+                      className="block px-4 py-2 hover:bg-gray-100"
+                    >
+                      📊 Dashboard
+                    </Link>
+
+                    <Link
+                      to="/admin/products"
+                      className="block px-4 py-2 hover:bg-gray-100"
+                    >
+                      📦 Manage Products
+                    </Link>
+
+                    <Link
+                      to="/admin/add-product"
+                      className="block px-4 py-2 hover:bg-gray-100"
+                    >
+                      ➕ Add Product
+                    </Link>
+
+                    <Link
+                      to="/admin/users"
+                      className="block px-4 py-2 hover:bg-gray-100"
+                    >
+                      👥 Manage Users
+                    </Link>
+
+                    <Link
+                      to="/admin/orders"
+                      className="block px-4 py-2 hover:bg-gray-100"
+                    >
+                      📝 Manage Orders
+                    </Link>
+
+                    <hr />
+
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-100"
+                    >
+                      🚪 Logout
+                    </button>
+
+                  </div>
+                )}
+
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+
+                <Link
+                  to="/profile"
+                  className="font-medium text-sm hover:text-indigo-600"
+                >
+                  Hi, {user.name}
+                </Link>
+
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                >
+                  Logout
+                </button>
+
+              </div>
+            )
           ) : (
             <Link
               to="/login"

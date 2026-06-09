@@ -18,7 +18,7 @@ import ManageUsers from "../pages/admin/ManageUsers";
 import AddProduct from "../pages/admin/AddProduct";
 import ProtectedRoute from "../components/ProtectedRoute";
 import AdminRoute from "../components/AdminRoute";
-
+import EditProduct from "../pages/admin/EditProduct";
 function AppRoutes() {
   return (
     <Routes>
@@ -125,7 +125,14 @@ function AppRoutes() {
     </AdminRoute>
   }
 />
-
+<Route
+  path="/admin/edit-product/:id"
+  element={
+    <AdminRoute>
+      <EditProduct />
+    </AdminRoute>
+  }
+/>
     </Routes>
   );
 }

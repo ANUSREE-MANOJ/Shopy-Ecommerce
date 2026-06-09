@@ -8,7 +8,7 @@ function ManageProducts() {
   const fetchProducts = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/products"
+        `${import.meta.env.VITE_API_URL}/api/products`
       );
 
       setProducts(res.data);
@@ -28,7 +28,7 @@ function ManageProducts() {
   try {
 
     await axios.delete(
-      `http://localhost:5000/api/products/${id}`
+      `${import.meta.env.VITE_API_URL}/api/products/${id}`
     );
 
     alert("Product Deleted");
@@ -99,7 +99,7 @@ function ManageProducts() {
   src={
     product.image.startsWith("http")
       ? product.image
-      : `http://localhost:5000${product.image}`
+      : `${import.meta.env.VITE_API_URL}${product.image}`
   }
   alt={product.name}
   className="w-20 h-20 object-cover rounded"
@@ -123,6 +123,14 @@ function ManageProducts() {
   >
     Delete
   </button>
+
+  <Link
+  to={`/admin/edit-product/${product._id}`}
+  className="bg-blue-500 text-white px-3 py-1 rounded mr-2 ml-3"
+>
+  Edit
+</Link>
+
 
 </td>
             </tr>
