@@ -1,11 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import ProductCard from "../components/ProductCard";
-import products from "../assets/product";
 
 function Products() {
-
+  const [products, setProducts] = useState([]);
   const [nameFilter, setNameFilter] = useState("");
   const [maxPrice, setMaxPrice] = useState(50000);
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:5000/api/products"
+      );
+
+      setProducts(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const filteredProducts = products.filter(
     (product) =>
@@ -28,8 +44,6 @@ function Products() {
 
         <div className="grid md:grid-cols-2 gap-6">
 
-          {/* Name Filter */}
-
           <div>
 
             <label className="block mb-2 font-semibold">
@@ -48,8 +62,6 @@ function Products() {
 
           </div>
 
-          {/* Price Filter */}
-
           <div>
 
             <label className="block mb-2 font-semibold">
@@ -63,7 +75,9 @@ function Products() {
               step="500"
               value={maxPrice}
               onChange={(e) =>
-                setMaxPrice(Number(e.target.value))
+                setMaxPrice(
+                  Number(e.target.value)
+                )
               }
               className="w-full"
             />
@@ -73,8 +87,6 @@ function Products() {
         </div>
 
       </div>
-
-      {/* Product List */}
 
       {filteredProducts.length === 0 ? (
 
@@ -86,12 +98,14 @@ function Products() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
 
-          {filteredProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-            />
-          ))}
+          {filteredProducts.map(
+            (product) => (
+              <ProductCard
+                key={product._id}
+                product={product}
+              />
+            )
+          )}
 
         </div>
 

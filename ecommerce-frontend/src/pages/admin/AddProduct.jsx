@@ -9,15 +9,19 @@ function AddProduct() {
     name: "",
     description: "",
     price: "",
-    image: "",
+    imageUrl: "",
     category: "",
     stock: "",
   });
 
+  const [imageFile, setImageFile] =
+    useState(null);
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]:
+        e.target.value,
     });
   };
 
@@ -25,23 +29,75 @@ function AddProduct() {
     e.preventDefault();
 
     try {
-      await axios.post(
-        "http://localhost:5000/api/products",
-        formData
+      const data = new FormData();
+
+      data.append(
+        "name",
+        formData.name
       );
 
-      alert("Product Added Successfully!");
+      data.append(
+        "description",
+        formData.description
+      );
+
+      data.append(
+        "price",
+        formData.price
+      );
+
+      data.append(
+        "category",
+        formData.category
+      );
+
+      data.append(
+        "stock",
+        formData.stock
+      );
+
+      data.append(
+        "imageUrl",
+        formData.imageUrl
+      );
+
+      if (imageFile) {
+        data.append(
+          "imageFile",
+          imageFile
+        );
+      }
+
+      await axios.post(
+        "http://localhost:5000/api/products",
+        data,
+        {
+          headers: {
+            "Content-Type":
+              "multipart/form-data",
+          },
+        }
+      );
+
+      alert(
+        "Product Added Successfully!"
+      );
 
       navigate("/admin/products");
+
     } catch (error) {
+
       console.log(error);
 
-      alert("Failed to Add Product");
+      alert(
+        "Failed to Add Product"
+      );
+
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-center items-center">
+    <div className="min-h-screen bg-gray-100 flex justify-center items-center py-10">
 
       <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-2xl">
 
@@ -83,15 +139,57 @@ function AddProduct() {
             required
           />
 
+          {/* Image URL */}
+
           <input
             type="text"
-            name="image"
-            placeholder="Image URL"
-            value={formData.image}
+            name="imageUrl"
+            placeholder="Image URL (Optional)"
+            value={formData.imageUrl}
             onChange={handleChange}
             className="w-full border p-3 rounded-lg"
-            required
           />
+
+          <p className="text-center font-semibold text-gray-500">
+            OR
+          </p>
+
+          {/* Upload Image */}
+
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) =>
+              setImageFile(
+                e.target.files[0]
+              )
+            }
+            className="w-full border p-3 rounded-lg"
+          />
+
+          {/* Preview */}
+
+          {imageFile && (
+            <img
+              src={URL.createObjectURL(
+                imageFile
+              )}
+              alt="Preview"
+              className="w-40 h-40 object-cover rounded-lg mx-auto"
+            />
+          )}
+
+          {/* URL Preview */}
+
+          {formData.imageUrl && (
+            <img
+              src={
+                formData.imageUrl
+              }
+              alt="Preview"
+              className="w-40 h-40 object-cover rounded-lg mx-auto"
+            />
+          )}
 
           <input
             type="text"

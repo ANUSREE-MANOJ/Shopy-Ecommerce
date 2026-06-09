@@ -21,7 +21,7 @@ function ProductCard({ product }) {
   };
 
   return (
-    <Link to={`/products/${product.id}`}>
+    <Link to={`/products/${product._id}`}>
 
       <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden">
 
@@ -30,11 +30,17 @@ function ProductCard({ product }) {
         <div className="relative">
 
           <img
-            src={product.image}
-            alt={product.name}
-            className="h-56 w-full object-cover"
-          />
-
+  src={
+    product.image?.startsWith("http")
+      ? product.image
+      : `http://localhost:5000${product.image}`
+  }
+  alt={product.name}
+  className="h-56 w-full object-cover"
+  onError={(e) => {
+    e.target.src = "https://picsum.photos/400/300";
+  }}
+/>
           {/* Wishlist Icon */}
 
           <button

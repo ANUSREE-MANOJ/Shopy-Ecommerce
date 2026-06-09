@@ -17,6 +17,32 @@ function ManageProducts() {
     }
   };
 
+  const deleteProduct = async (id) => {
+
+  const ok = window.confirm(
+    "Are you sure you want to delete this product?"
+  );
+
+  if (!ok) return;
+
+  try {
+
+    await axios.delete(
+      `http://localhost:5000/api/products/${id}`
+    );
+
+    alert("Product Deleted");
+
+    fetchProducts();
+
+  } catch (error) {
+
+    console.log(error);
+
+  }
+
+};
+
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -54,7 +80,7 @@ function ManageProducts() {
             <th>Price</th>
 
             <th>Stock</th>
-
+            <th>Actions</th>
           </tr>
 
         </thead>
@@ -69,13 +95,14 @@ function ManageProducts() {
             >
 
               <td className="p-2">
-               <img
-  src={product.image}
+      <img
+  src={
+    product.image.startsWith("http")
+      ? product.image
+      : `http://localhost:5000${product.image}`
+  }
   alt={product.name}
-  className="w-20 h-20 object-cover mx-auto rounded"
-  onError={(e) => {
-    e.target.src = "https://picsum.photos/200";
-  }}
+  className="w-20 h-20 object-cover rounded"
 />
               </td>
 
@@ -86,7 +113,18 @@ function ManageProducts() {
               <td>₹{product.price}</td>
 
               <td>{product.stock}</td>
+               <td>
 
+  <button
+    onClick={() =>
+      deleteProduct(product._id)
+    }
+    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+  >
+    Delete
+  </button>
+
+</td>
             </tr>
 
           ))}
